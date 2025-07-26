@@ -4,6 +4,7 @@ import re
 import strip_codes
 import requests
 import json
+from pathlib import Path
 
 # Define ANSI escape codes for colors and reset
 RED = '\033[31m'
@@ -13,7 +14,8 @@ RESET = '\033[0m'  # Resets all formatting
 
 API_KEY = ''
 MOBSF_URL = 'http://127.0.0.1:8000'
-apk_file = './InsecureBankv2.apk'
+apk_file = './Binary/InsecureBankv2.apk'
+folder_path = Path('./Binary')
 
 def start_mobsf():
     # Start MobSF in detached mode using Docker
@@ -40,38 +42,52 @@ def get_mobsf_api_key(retries=15, delay=4):
         time.sleep(delay)
     return None
 
-def uploading_binary(binary):
-    upload_url = f'{MOBSF_URL}/api/v1/upload'
-    files = {'file': (binary, open(binary, 'rb'), 'application/octet-stream')}
-    upload_resp = requests.post(upload_url, files=files, headers=headers)
-    upload_data = upload_resp.json()
-    scan_hash = upload_data['hash']
+def uploading_binary(files):
+    scan_hash = []
+    for binary in files:
+        upload_url = f'{MOBSF_URL}/api/v1/upload'
+        files = {'file': (binary, open(binary, 'rb'), 'application/octet-stream')}
+        upload_resp = requests.post(upload_url, files=files, headers=headers)
+        upload_data = upload_resp.json()
+        scan_hash.append(upload_data['hash'])
     return scan_hash
 
 def generate_json_report(scan_hash):
-    report_url = f'{MOBSF_URL}/api/v1/report_json'
-    data = {'hash': scan_hash}
-    report_resp = requests.post(report_url, data=data, headers=headers)
-    report = report_resp.json()
-    with open('mobsf_report.json', 'w') as f:
-        json.dump(report, f, indent=4)
-    print("JSON report saved as mobsf_report.json")
+    for hash in scan_hash:
+        report_url = f'{MOBSF_URL}/api/v1/report_json'
+        data = {'hash': hash}
+        report_resp = requests.post(report_url, data=data, headers=headers)
+        report = report_resp.json()
+        file_name = './Reports/JSON/mobsf_report-'+hash+'.json'
+        with open(file_name, 'w') as f:
+            json.dump(report, f, indent=4)
+        print(f"JSON report saved as mobsf_report-{hash}.json")
 
-def scan_uploaded_file(scan_hash): 
-    scan_endpoint = f"{MOBSF_URL}/api/v1/scan"
-    data = {
-        'hash': scan_hash
-    }
+def generate_pdf_report(scan_hash):
+    for hash in scan_hash:
+        report_url = f'{MOBSF_URL}/api/v1/download_pdf'
+        data = {'hash': hash}
+        report_resp = requests.post(report_url, data=data, headers=headers)
+        file_name = './Reports/PDF/mobsf_report-'+hash+'.pdf'
+        with open(file_name, 'wb') as f:
+            f.write(report_resp.content)
+        print(f"JSON report saved as mobsf_report-{hash}.pdf")
 
-    response = requests.post(scan_endpoint, headers=headers, data=data)
+def scan_uploaded_file(scan_hash):
+    for hash in scan_hash: 
+        scan_endpoint = f"{MOBSF_URL}/api/v1/scan"
+        data = {
+            'hash': hash
+        }
 
-    if response.status_code == 200:
-        print(f"{GREEN}[+] Scan initiated successfully.{RESET}")
-        return response.json()
-    else:
-        print(f"❌ Failed to initiate scan: {response.status_code}")
-        print("Response:", response.text)
-        return None
+        response = requests.post(scan_endpoint, headers=headers, data=data)
+
+        if response.status_code == 200:
+            print(f"{GREEN}[+] Scan finished successfully for {hash}.{RESET}")
+        else:
+            print(f"{RED}Failed to initiate scan: {response.status_code}{RESET}")
+            print("Response:", response.text)
+            return None
 
 start_mobsf()
 
@@ -86,5 +102,8 @@ headers={'Authorization': API_KEY}
 print("[*] Starting MobSF. Please wait")
 time.sleep(15)
 print("[*] MobSF is running at http://127.0.0.1:8000")
-scan_hash = uploading_binary(apk_file)
+files = ['./Binary/'+f.name for f in folder_path.iterdir() if f.is_file()]
+scan_hash = uploading_binary(files)
 scan_uploaded_file(scan_hash)
+generate_json_report(scan_hash)
+generate_pdf_report(scan_hash)
