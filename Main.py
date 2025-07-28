@@ -99,7 +99,18 @@ def process_json_file():
                 print("It is an IPA file")
             if (data['file_name'][-3:] == "apk"):
                 print("It is an APK file")
+                process_apk_result(data)
 
+def process_apk_result(data):
+    # Get permission list
+    permissions = data['permissions']
+    print("[+] Checking permissions")
+
+    # Process permissions
+    dangerous_perms = {perm: details for perm, details in permissions.items() if details["status"] == "dangerous"}
+
+    for perm in dangerous_perms.items():
+        print(f"{RED}{perm[0]} is dangerous{RESET}")
 
 start_mobsf()
 
