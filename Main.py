@@ -5,6 +5,7 @@ import strip_codes
 import requests
 import json
 from pathlib import Path
+import apk_checks
 
 # Define ANSI escape codes for colors and reset
 RED = '\033[31m'
@@ -14,8 +15,8 @@ RESET = '\033[0m'  # Resets all formatting
 
 API_KEY = ''
 MOBSF_URL = 'http://127.0.0.1:8000'
-binary_folder_path = Path('./Binary')
-json_report_folder_path = Path('./Reports/JSON')
+BINARY_FOLDER_PATH = Path('./Binary')
+JSON_REPORT_FOLDER_PATH = Path('./Reports/JSON')
 
 
 def start_mobsf():
@@ -31,7 +32,7 @@ def start_mobsf():
         '-p', '8000:8000',
         '--name', 'mobsf',
         'opensecurity/mobile-security-framework-mobsf:latest'
-    ], check=True)
+    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
 def get_mobsf_api_key(retries=15, delay=4):
     for i in range(retries):
@@ -91,26 +92,15 @@ def scan_uploaded_file(scan_hash):
             return None
         
 def process_json_file():
-    json_files = ['./Reports/JSON/'+f.name for f in json_report_folder_path.iterdir() if f.is_file()]
+    json_files = ['./Reports/JSON/'+f.name for f in JSON_REPORT_FOLDER_PATH.iterdir() if f.is_file()]
     for json_file in json_files:
         with open(json_file, 'r') as file:
             data = json.load(file)
             if (data['file_name'][-3:] == "ipa"):
                 print("It is an IPA file")
             if (data['file_name'][-3:] == "apk"):
-                print("It is an APK file")
-                process_apk_result(data)
-
-def process_apk_result(data):
-    # Get permission list
-    permissions = data['permissions']
-    print("[+] Checking permissions")
-
-    # Process permissions
-    dangerous_perms = {perm: details for perm, details in permissions.items() if details["status"] == "dangerous"}
-
-    for perm in dangerous_perms.items():
-        print(f"{RED}{perm[0]} is dangerous{RESET}")
+                print(f"[*] Reviewing results for {data['file_name']}")
+                apk_checks.process_apk_result(data)
 
 start_mobsf()
 
@@ -122,12 +112,16 @@ else:
     print("{RED}[-] Failed to extract MobSF API Key from logs.{RESET}")
 
 headers={'Authorization': API_KEY}
-print("[*] Starting MobSF. Please wait")
-time.sleep(15)
+print("[*] Starting MobSF. Please wait for a minute")
+time.sleep(60)
 print("[*] MobSF is running at http://127.0.0.1:8000")
-files = ['./Binary/'+f.name for f in binary_folder_path.iterdir() if f.is_file()]
+files = ['./Binary/'+f.name for f in BINARY_FOLDER_PATH.iterdir() if f.is_file()]
+print("[*] Uploading Binaries")
 scan_hash = uploading_binary(files)
+print("[*] Scanning Binaries")
 scan_uploaded_file(scan_hash)
+print("[*] Generating JSON Report")
 generate_json_report(scan_hash)
+print("[*] Generating PDF Report")
 generate_pdf_report(scan_hash)
 process_json_file()
