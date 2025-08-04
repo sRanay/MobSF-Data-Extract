@@ -6,6 +6,7 @@ import requests
 import json
 from pathlib import Path
 import apk_checks
+import ipa_checks
 
 # Define ANSI escape codes for colors and reset
 RED = '\033[31m'
@@ -96,10 +97,10 @@ def process_json_file():
     for json_file in json_files:
         with open(json_file, 'r') as file:
             data = json.load(file)
+            print(f"\n====================== Reviewing results for {data['file_name']} ======================")
             if (data['file_name'][-3:] == "ipa"):
-                print("It is an IPA file")
+                ipa_checks.process_ipa_result(data)
             if (data['file_name'][-3:] == "apk"):
-                print(f"\n====================== Reviewing results for {data['file_name']} ======================")
                 apk_checks.process_apk_result(data)
 
 start_mobsf()
