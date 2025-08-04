@@ -28,7 +28,7 @@ def process_apk_result(data):
     print("[*] Checking SDK Version")
     
     # Check if the min SDK is the same level as the latest SDK version
-    if(int(data['min_sdk']) < int(highest_sdk)):
+    if (int(data['min_sdk']) < int(highest_sdk)):
         print(f"{RED}[-] {data['min_sdk']} is not the highest SDK version. (Latest SDK is {highest_sdk}){RESET}")
 
     # Check if v1 signature is signed
@@ -46,3 +46,26 @@ def process_apk_result(data):
             print(f"{GREEN}[+] Bit size is strong: {bit_size} bits{RESET}")
     else:
         print(f"{YELLOW}[*] Unable to find bit size in certificate information{RESET}")
+
+    # Checking the binary analysis portion of the APK
+    
+    # Getting shared library portion
+    shared_library = data['binary_analysis']
+    
+    for single_library in shared_library:
+        print(f"[*] Checking {single_library['name']}")
+        # Check NX bit
+        if (single_library['nx']['is_nx'] == False):
+            print(f"{RED}[-] {single_library['name']} does not have NX bit set{RESET}")
+        
+        # Check PIE
+        if (single_library['pie']['is_pie'] == False):
+            print(f"{RED}[-] {single_library['name']} does not have PIE set{RESET}")
+
+        # Check Stack Canary
+        if (single_library['stack_canary']['has_canary'] == False):
+            print(f"{RED}[-] {single_library['name']} does not have Stack Canary set{RESET}")
+
+        # Check debugging symbols
+        if (single_library['symbol']['is_stripped'] == False):
+            print(f"{RED}[-] {single_library['name']} still have debugging symbols enabled{RESET}")

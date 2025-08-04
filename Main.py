@@ -99,7 +99,7 @@ def process_json_file():
             if (data['file_name'][-3:] == "ipa"):
                 print("It is an IPA file")
             if (data['file_name'][-3:] == "apk"):
-                print(f"[*] Reviewing results for {data['file_name']}")
+                print(f"\n====================== Reviewing results for {data['file_name']} ======================")
                 apk_checks.process_apk_result(data)
 
 start_mobsf()
