@@ -98,10 +98,12 @@ def process_json_file():
         with open(json_file, 'r') as file:
             data = json.load(file)
             print(f"\n====================== Reviewing results for {data['file_name']} ======================")
+            print(f"[*] Processing for {data['file_name']}")
             if (data['file_name'][-3:] == "ipa"):
                 ipa_checks.process_ipa_result(data)
             if (data['file_name'][-3:] == "apk"):
                 apk_checks.process_apk_result(data)
+            print(f"[*] Done reviewing result for {data['file_name']}")
 
 start_mobsf()
 
@@ -126,3 +128,4 @@ generate_json_report(scan_hash)
 print("[*] Generating PDF Report")
 generate_pdf_report(scan_hash)
 process_json_file()
+print(f"\n[*] Please check the results in the Exports Folder")
