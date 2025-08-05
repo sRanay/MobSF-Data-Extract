@@ -1,5 +1,5 @@
 def process_ipa_result(data):
-    # Setting up stdout to be used for both printing statement and sending the output to the file
+    # Creating an export file to store all the issues
     output_file = open(f"./Export/{data['file_name']}-results.txt", "w")
 
     # Getting permissions

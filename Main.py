@@ -74,7 +74,7 @@ def generate_pdf_report(scan_hash):
         file_name = './Reports/PDF/mobsf_report-'+hash+'.pdf'
         with open(file_name, 'wb') as f:
             f.write(report_resp.content)
-        print(f"{GREEN}[+] JSON report saved as mobsf_report-{hash}.pdf{RESET}")
+        print(f"{GREEN}[+] PDF report saved as mobsf_report-{hash}.pdf{RESET}")
 
 def scan_uploaded_file(scan_hash):
     for hash in scan_hash: 
