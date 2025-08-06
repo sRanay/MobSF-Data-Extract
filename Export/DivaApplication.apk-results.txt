@@ -1,0 +1,39 @@
+---------------------Permissions Issues---------------------
+[-] android.permission.WRITE_EXTERNAL_STORAGE is dangerous
+[-] android.permission.READ_EXTERNAL_STORAGE is dangerous
+
+---------------------SDK Version Issues---------------------
+[-] 15 is not the highest SDK version. (Latest SDK is 36)
+
+---------------------Certificate Issues---------------------
+[-] v1 Signature is enabled
+
+---------------------Binary Analysis Issues---------------------
+NX Bit not set:
+[-] apktool_out/lib/armeabi/libdivajni.so
+[-] apktool_out/lib/armeabi-v7a/libdivajni.so
+[-] apktool_out/lib/x86_64/libdivajni.so
+[-] apktool_out/lib/mips64/libdivajni.so
+[-] apktool_out/lib/x86/libdivajni.so
+[-] apktool_out/lib/arm64-v8a/libdivajni.so
+[-] apktool_out/lib/mips/libdivajni.so
+[-] lib/armeabi/libdivajni.so
+[-] lib/armeabi-v7a/libdivajni.so
+[-] lib/x86_64/libdivajni.so
+[-] lib/mips64/libdivajni.so
+[-] lib/x86/libdivajni.so
+[-] lib/arm64-v8a/libdivajni.so
+[-] lib/mips/libdivajni.so
+Stack Canary not set:
+[-] apktool_out/lib/armeabi/libdivajni.so
+[-] apktool_out/lib/armeabi-v7a/libdivajni.so
+[-] apktool_out/lib/x86_64/libdivajni.so
+[-] apktool_out/lib/mips64/libdivajni.so
+[-] apktool_out/lib/arm64-v8a/libdivajni.so
+[-] apktool_out/lib/mips/libdivajni.so
+[-] lib/armeabi/libdivajni.so
+[-] lib/armeabi-v7a/libdivajni.so
+[-] lib/x86_64/libdivajni.so
+[-] lib/mips64/libdivajni.so
+[-] lib/arm64-v8a/libdivajni.so
+[-] lib/mips/libdivajni.so

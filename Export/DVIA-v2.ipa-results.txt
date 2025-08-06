@@ -1,0 +1,16 @@
+---------------------Permissions Issues---------------------
+[-] NSCameraUsageDescription is dangerous
+
+---------------------ATS Issues---------------------
+[-] App Transport Security AllowsArbitraryLoads is allowed
+
+---------------------Binary Analysis Issues---------------------
+[-] NX bit is not set
+[-] Application is not encrypted
+[-] Debugging symbol is not stripped
+
+---------------------URL Scheme Issues---------------------
+[-] URL Scheme used (com.highaltitudehacks.DVIAswiftv2)
+
+---------------------Version Issues---------------------
+[*] Min OS Version is 12.0
