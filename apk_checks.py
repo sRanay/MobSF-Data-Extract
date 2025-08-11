@@ -54,22 +54,18 @@ def process_apk_result(data):
         # Check NX bit
         if (single_library['nx']['is_nx'] == False):
             nx_output_string += f"[-] {single_library['name']}\n"
-            #output_file.write(f"[-] {single_library['name']} does not have NX bit set\n")
         
         # Check PIE
         if (single_library['pie']['is_pie'] == False):
             pie_output_string += f"[-] {single_library['name']}\n"
-            #output_file.write(f"[-] {single_library['name']} does not have PIE set\n")
         
         # Check Stack Canary
         if (single_library['stack_canary']['has_canary'] == False):
             stack_canary_output_string += f"[-] {single_library['name']}\n"
-            #output_file.write(f"[-] {single_library['name']} does not have Stack Canary set\n")
 
         # Check debugging symbols
         if (single_library['symbol']['is_stripped'] == False):
             debugging_symbol_output_string += f"[-] {single_library['name']}\n"
-            #output_file.write(f"[-] {single_library['name']} still have debugging symbols enabled\n")
     
     if (nx_output_string != ""):
         output_file.write("NX Bit not set:\n")
@@ -83,3 +79,25 @@ def process_apk_result(data):
     if (debugging_symbol_output_string != ""):
         output_file.write("Debugging Symbols are enabled:\n")
         output_file.write(debugging_symbol_output_string)
+    
+    # Getting manifest portion
+    manifest_analysis_findings = data['manifest_analysis']['manifest_findings']
+    output_file.write("\n---------------------Manifest Analysis Issues---------------------\n")
+    
+    # Checking for each findings
+    for finding in manifest_analysis_findings:
+        if (finding['rule'] == "vulnerable_os_version"):
+            output_file.write(f"[-] Application can be installed on vulnerable Android version (minSDK={finding['component'][1]})\n")
+            continue
+        if (finding['rule'] == "app_is_debuggable"):
+            output_file.write("[-] Application is debuggable (android:debuggable=true)\n")
+            continue
+        if (finding['rule'] == "app_allowbackup"):
+            output_file.write("[-] Application has allowed backup (android:allowBackup=true)\n")
+            continue
+        if (finding['rule'] == "exported_intent_filter_exists"):
+            output_file.write(f"[-] {finding['component'][0]} {finding['component'][1]} is explicitly exported\n")
+            continue
+        if (finding['rule'] == "explicitly_exported"):
+            output_file.write(f"[-] {finding['component'][0]} {finding['component'][1]} has exported set (android:exported=true)\n")
+            continue

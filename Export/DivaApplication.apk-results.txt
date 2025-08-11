@@ -37,3 +37,11 @@ Stack Canary not set:
 [-] lib/mips64/libdivajni.so
 [-] lib/arm64-v8a/libdivajni.so
 [-] lib/mips/libdivajni.so
+
+---------------------Manifest Analysis Issues---------------------
+[-] Application can be installed on vulnerable Android version (minSDK=15)
+[-] Application is debuggable (android:debuggable=true)
+[-] Application has allowed backup (android:allowBackup=true)
+[-] Activity jakhar.aseem.diva.APICredsActivity is explicitly exported
+[-] Activity jakhar.aseem.diva.APICreds2Activity is explicitly exported
+[-] Content Provider jakhar.aseem.diva.NotesProvider has exported set (android:exported=true)
