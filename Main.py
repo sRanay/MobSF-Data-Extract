@@ -1,10 +1,10 @@
+from pathlib import Path
 import subprocess
 import time
 import re
 import strip_codes
 import requests
 import json
-from pathlib import Path
 import apk_checks
 import ipa_checks
 
@@ -97,22 +97,20 @@ def process_json_file():
     for json_file in json_files:
         with open(json_file, 'r') as file:
             data = json.load(file)
-            print(f"\n====================== Reviewing results for {data['file_name']} ======================")
             print(f"[*] Processing for {data['file_name']}")
             if (data['file_name'][-3:] == "ipa"):
                 ipa_checks.process_ipa_result(data)
             if (data['file_name'][-3:] == "apk"):
                 apk_checks.process_apk_result(data)
-            print(f"[*] Done reviewing result for {data['file_name']}")
+            print(f"{GREEN}[+] Done reviewing result for {data['file_name']}{RESET}")
 
 start_mobsf()
 
 API_KEY = get_mobsf_api_key()
 
-if API_KEY:
-    print(f"{GREEN}[+] MobSF REST API Key: {API_KEY}{RESET}")
-else:
+if API_KEY == "":
     print("{RED}[-] Failed to extract MobSF API Key from logs.{RESET}")
+    exit(1)
 
 headers={'Authorization': API_KEY}
 print("[*] Starting MobSF. Please wait for a minute")
@@ -128,4 +126,4 @@ generate_json_report(scan_hash)
 print("[*] Generating PDF Report")
 generate_pdf_report(scan_hash)
 process_json_file()
-print(f"\n[*] Please check the results in the Exports Folder")
+print(f"[*] Please check the results in the Exports Folder")
