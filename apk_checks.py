@@ -31,6 +31,11 @@ def process_apk_result(data):
     # Check if v1 signature is signed
     if re.search(r'v1 signature:\s*True', data['certificate_analysis']['certificate_info']):
         output_file.write("[-] v1 Signature is enabled\n")
+
+    # Check if v1 signature is signed
+    if re.search(r'v2 signature:\s*False', data['certificate_analysis']['certificate_info']):
+        if (int(data['min_sdk']) >= 24):
+            output_file.write("[-] v2 Signature is not set to true (Use at least the v2 signature scheme, which signs the APK as a whole, providing stronger protection compared to the older v1 (JAR) signing method)\n")
         
     # Get bit size
     match = re.search(r'Bit Size:\s*(\d+)', data['certificate_analysis']['certificate_info'])
