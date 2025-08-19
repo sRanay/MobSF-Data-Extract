@@ -104,18 +104,21 @@ def process_json_file():
                 apk_checks.process_apk_result(data)
             print(f"{GREEN}[+] Done reviewing result for {data['file_name']}{RESET}")
 
-start_mobsf()
-
-API_KEY = get_mobsf_api_key()
-
-if API_KEY == "":
-    print("{RED}[-] Failed to extract MobSF API Key from logs.{RESET}")
-    exit(1)
+mobsf_already_on = input("[*] Do you have a current MobSF instance running? (Y/N): ")
+if (mobsf_already_on == "Y"):
+    MOBSF_URL = input("[*] Please enter the full URL (E.g. http://127.0.0.1:8000): ")
+    API_KEY = input("[*] Please input the API key: ")
+else:
+    start_mobsf()
+    API_KEY = get_mobsf_api_key()
+    if API_KEY == "":
+        print("{RED}[-] Failed to extract MobSF API Key from logs.{RESET}")
+        exit(1)
+    print("[*] Starting MobSF. Please wait for a minute")
+    time.sleep(60)
+    print("[*] MobSF is running at http://127.0.0.1:8000")
 
 headers={'Authorization': API_KEY}
-print("[*] Starting MobSF. Please wait for a minute")
-time.sleep(60)
-print("[*] MobSF is running at http://127.0.0.1:8000")
 files = ['./Binary/'+f.name for f in BINARY_FOLDER_PATH.iterdir() if f.is_file()]
 print("[*] Uploading Binaries")
 scan_hash = uploading_binary(files)

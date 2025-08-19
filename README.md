@@ -12,7 +12,8 @@ This repository contains a main python script (`Main.py`) that automates the ext
 
 ## Example output
 ```
-PS .... > python .\Main.py
+PS ... > python .\Main.py
+[*] Do you have a current MobSF instance running? (Y/N): N
 [*] Starting MobSF container...
 [*] Starting MobSF. Please wait for a minute
 [*] MobSF is running at http://127.0.0.1:8000
