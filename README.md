@@ -49,6 +49,7 @@ PS ... > python .\Main.py
 - Checking application permissions used
 - Retrieving the Minimum SDK version for the application
 - Checking v1 Signature if it is true
+- Checking v2 Signature based on the minimum SDK of the application
 - Checking Bit Size of the Signature
 - Binary Analysis
 - Manifest Analysis
